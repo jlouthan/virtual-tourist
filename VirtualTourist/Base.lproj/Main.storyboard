@@ -3,22 +3,43 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Map View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="MapViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
-                    <mapView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" id="9PS-74-SDp">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Qm6-if-eYs"/>
+                        <viewControllerLayoutGuide type="bottom" id="F6p-4K-gqN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="eK4-1E-brk">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    </mapView>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="zsC-aQ-AWV">
+                                <rect key="frame" x="4" y="0.0" width="592" height="600"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="Xwn-D6-EGv"/>
+                                </connections>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="zsC-aQ-AWV" firstAttribute="leading" secondItem="eK4-1E-brk" secondAttribute="leadingMargin" constant="-16" id="Br3-jl-8n6"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="zsC-aQ-AWV" secondAttribute="trailing" constant="-16" id="Qgt-k2-NbK"/>
+                            <constraint firstItem="zsC-aQ-AWV" firstAttribute="top" secondItem="eK4-1E-brk" secondAttribute="topMargin" id="cVF-Fl-2ah"/>
+                            <constraint firstItem="F6p-4K-gqN" firstAttribute="top" secondItem="zsC-aQ-AWV" secondAttribute="bottom" id="hpV-zZ-Q3b"/>
+                        </constraints>
+                    </view>
                     <connections>
-                        <outlet property="mapView" destination="9PS-74-SDp" id="iZp-gO-fgY"/>
+                        <outlet property="mapView" destination="zsC-aQ-AWV" id="4n4-2Z-loL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="408" y="339"/>
         </scene>
     </scenes>
 </document>
