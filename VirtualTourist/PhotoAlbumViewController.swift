@@ -11,11 +11,13 @@ import MapKit
 
 class PhotoAlbumViewController: UIViewController {
     
-    var pin: CLLocationCoordinate2D!
+    var pin: Pin!
     
     override func viewDidLoad() {
+        print("my pin is")
+        print(pin.latitude)
+        print(pin.longitude)
         super.viewDidLoad()
-        print(pin)
     }
 }
 

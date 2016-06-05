@@ -13,8 +13,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
 
+    var pins = [Pin]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.delegate = self
         restoreMapRegion(false)
     }
     
@@ -30,14 +33,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     @IBAction func handleLongPress(sender: UILongPressGestureRecognizer) {
         if sender.state == .Began {
+            
             //Get location of touch and convert map coordinates
             let touchPoint = sender.locationInView(mapView)
             let coordinate = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
+            
+            //Save the pin instance
+            let pin = Pin(dictionary: ["latitude": coordinate.latitude, "longitude": coordinate.longitude])
+            pins.append(pin)
+            
             //Drop a pin
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = coordinate
-            //TODO add a real title?
-            annotation.title = ""
+            let annotation = MapAnnotation(pin: pin)
             mapView.addAnnotation(annotation)
         }
     }
@@ -45,14 +51,32 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     //MARK: MKMapViewDelegate
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        let coordinate = view.annotation?.coordinate
+        let annotation = view.annotation as? MapAnnotation
         //Display photo album view for this pin
         let controller = PhotoAlbumViewController()
-        controller.pin = coordinate
+        controller.pin = annotation?.pin
         navigationController!.pushViewController(controller, animated: true)
         
         mapView.deselectAnnotation(view.annotation, animated: false)
     }
+    
+    //do I need this?
+//    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+//        if let annotation = annotation as? MapAnnotation {
+//            let identifier = "pin"
+//            var view: MKPinAnnotationView
+//            if let dequeuedView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
+//                as? MKPinAnnotationView { // 2
+//                dequeuedView.annotation = annotation
+//                view = dequeuedView
+//            } else {
+//                // 3
+//                view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+//            }
+//            return view
+//        }
+//        return nil
+//    }
     
     //TODO maybe save zoom location when the app is about to quit, not every time the location moves?
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
