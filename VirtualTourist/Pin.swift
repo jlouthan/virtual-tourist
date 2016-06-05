@@ -12,7 +12,7 @@ class Pin {
     
     let latitude: Double
     let longitude: Double
-    let photos = [Photo]()
+    var photos = [Photo]()
     
     //MARK Initializers
     

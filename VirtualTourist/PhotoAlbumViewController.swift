@@ -19,5 +19,23 @@ class PhotoAlbumViewController: UIViewController {
         print(pin.longitude)
         super.viewDidLoad()
     }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if pin.photos.isEmpty {
+            
+            FlickrClient.sharedInstance().getPhotosForLatLong(pin.latitude, longitude: pin.longitude, completionHandlerForGetPhotosForLatLong: { (success, photos) in
+                
+                guard success == true else {
+                    print("Error getting photos")
+                    return
+                }
+                
+                self.pin.photos = photos!
+                
+            })
+        }
+    }
 }
 
