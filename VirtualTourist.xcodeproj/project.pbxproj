@@ -14,6 +14,7 @@
 		1803727E1D03964C001F5618 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1803727C1D03964C001F5618 /* LaunchScreen.storyboard */; };
 		180372891D03964C001F5618 /* VirtualTouristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180372881D03964C001F5618 /* VirtualTouristTests.swift */; };
 		180372941D03964C001F5618 /* VirtualTouristUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180372931D03964C001F5618 /* VirtualTouristUITests.swift */; };
+		180372A21D03C383001F5618 /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180372A11D03C383001F5618 /* PhotoAlbumViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		1803728F1D03964C001F5618 /* VirtualTouristUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VirtualTouristUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		180372931D03964C001F5618 /* VirtualTouristUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualTouristUITests.swift; sourceTree = "<group>"; };
 		180372951D03964C001F5618 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		180372A11D03C383001F5618 /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,8 +99,8 @@
 		180372721D03964B001F5618 /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
+				180372A31D03C433001F5618 /* Controller */,
 				180372731D03964B001F5618 /* AppDelegate.swift */,
-				180372751D03964B001F5618 /* MapViewController.swift */,
 				180372771D03964B001F5618 /* Main.storyboard */,
 				1803727A1D03964C001F5618 /* Assets.xcassets */,
 				1803727C1D03964C001F5618 /* LaunchScreen.storyboard */,
@@ -123,6 +125,15 @@
 				180372951D03964C001F5618 /* Info.plist */,
 			);
 			path = VirtualTouristUITests;
+			sourceTree = "<group>";
+		};
+		180372A31D03C433001F5618 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				180372751D03964B001F5618 /* MapViewController.swift */,
+				180372A11D03C383001F5618 /* PhotoAlbumViewController.swift */,
+			);
+			name = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,6 +269,7 @@
 			files = (
 				180372761D03964B001F5618 /* MapViewController.swift in Sources */,
 				180372741D03964B001F5618 /* AppDelegate.swift in Sources */,
+				180372A21D03C383001F5618 /* PhotoAlbumViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

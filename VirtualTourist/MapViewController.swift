@@ -18,6 +18,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         restoreMapRegion(false)
     }
     
+    override func viewWillAppear(animated: Bool) {
+        navigationController!.navigationBarHidden = true
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        navigationController!.navigationBarHidden = false
+    }
+    
     //MARK: Drop Pin
     
     @IBAction func handleLongPress(sender: UILongPressGestureRecognizer) {
@@ -28,11 +36,23 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             //Drop a pin
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
+            //TODO add a real title?
+            annotation.title = ""
             mapView.addAnnotation(annotation)
         }
     }
     
     //MARK: MKMapViewDelegate
+    
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        let coordinate = view.annotation?.coordinate
+        //Display photo album view for this pin
+        let controller = PhotoAlbumViewController()
+        controller.pin = coordinate
+        navigationController!.pushViewController(controller, animated: true)
+        
+        mapView.deselectAnnotation(view.annotation, animated: false)
+    }
     
     //TODO maybe save zoom location when the app is about to quit, not every time the location moves?
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
