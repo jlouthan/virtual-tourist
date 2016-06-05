@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class MapViewController: UIViewController {
+class MapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
 
@@ -17,13 +17,31 @@ class MapViewController: UIViewController {
         super.viewDidLoad()
         restoreMapRegion(false)
     }
-
+    
+    //MARK: Drop Pin
+    
+    @IBAction func handleLongPress(sender: UILongPressGestureRecognizer) {
+        if sender.state == .Began {
+            //Get location of touch and convert map coordinates
+            let touchPoint = sender.locationInView(mapView)
+            let coordinate = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
+            //Drop a pin
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            mapView.addAnnotation(annotation)
+        }
+    }
+    
+    //MARK: MKMapViewDelegate
+    
+    //TODO maybe save zoom location when the app is about to quit, not every time the location moves?
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        saveMapRegion()
+    }
 }
 
-
-
-//Methods for persisting zoom location and level of map view
-extension MapViewController: MKMapViewDelegate {
+//MARK: Methods for persisting zoom location and level of map view
+extension MapViewController {
     
     var filePath : String {
         let manager = NSFileManager.defaultManager()
@@ -60,11 +78,6 @@ extension MapViewController: MKMapViewDelegate {
             
             mapView.setRegion(savedRegion, animated: animated)
         }
-    }
-    
-    //TODO maybe save zoom location when the app is about to quit, not every time the location moves?
-    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        saveMapRegion()
     }
     
 }
