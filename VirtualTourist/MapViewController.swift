@@ -52,10 +52,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         let annotation = view.annotation as? MapAnnotation
-        //Display photo album view for this pin
-        let controller = PhotoAlbumViewController()
+        let controller = self.storyboard?.instantiateViewControllerWithIdentifier("PhotoAlbumVC") as! PhotoAlbumViewController
         controller.pin = annotation?.pin
-        navigationController!.pushViewController(controller, animated: true)
+        self.navigationController?.pushViewController(controller, animated: true)
+        
         
         mapView.deselectAnnotation(view.annotation, animated: false)
     }
