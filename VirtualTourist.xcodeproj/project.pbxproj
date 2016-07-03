@@ -22,6 +22,7 @@
 		180372B01D03D252001F5618 /* FlickrClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180372AF1D03D252001F5618 /* FlickrClient.swift */; };
 		180372B21D03D262001F5618 /* FlickrConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180372B11D03D262001F5618 /* FlickrConstants.swift */; };
 		180372B41D03D2C7001F5618 /* FlickrConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180372B31D03D2C7001F5618 /* FlickrConvenience.swift */; };
+		187547E41D287BE700587B76 /* PhotoAlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187547E31D287BE700587B76 /* PhotoAlbumCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		180372AF1D03D252001F5618 /* FlickrClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrClient.swift; sourceTree = "<group>"; };
 		180372B11D03D262001F5618 /* FlickrConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrConstants.swift; sourceTree = "<group>"; };
 		180372B31D03D2C7001F5618 /* FlickrConvenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrConvenience.swift; sourceTree = "<group>"; };
+		187547E31D287BE700587B76 /* PhotoAlbumCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				180372AA1D03CBA7001F5618 /* MapAnnotation.swift */,
+				187547E31D287BE700587B76 /* PhotoAlbumCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -321,6 +324,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				180372761D03964B001F5618 /* MapViewController.swift in Sources */,
+				187547E41D287BE700587B76 /* PhotoAlbumCell.swift in Sources */,
 				180372B21D03D262001F5618 /* FlickrConstants.swift in Sources */,
 				180372741D03964B001F5618 /* AppDelegate.swift in Sources */,
 				180372A21D03C383001F5618 /* PhotoAlbumViewController.swift in Sources */,

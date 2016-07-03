@@ -6,4 +6,10 @@
 //  Copyright © 2016 JennyLouthan. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+class PhotoAlbumCell: UICollectionViewCell {
+    
+    @IBOutlet weak var imageView: UIImageView!
+    
+}
