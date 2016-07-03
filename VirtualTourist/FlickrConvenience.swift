@@ -30,7 +30,8 @@ extension FlickrClient {
             FlickrConstants.ParameterKeys.Method: FlickrConstants.ParameterValues.SearchMethod,
             FlickrConstants.ParameterKeys.Extras: FlickrConstants.ParameterValues.MediumURL,
             FlickrConstants.ParameterKeys.Format: FlickrConstants.ParameterValues.ResponseFormat,
-            FlickrConstants.ParameterKeys.APIKey: FlickrConstants.ParameterValues.APIKey
+            FlickrConstants.ParameterKeys.APIKey: FlickrConstants.ParameterValues.APIKey,
+            FlickrConstants.ParameterKeys.PerPage: FlickrConstants.ParameterValues.NumPerPage
         ]
 
         
@@ -39,15 +40,39 @@ extension FlickrClient {
         
         requestBuilder.taskForGETMethod(url, headers: headers) { (result, error) in
             
-            guard error == nil else {
+            //TODO actually send the message if there's an error?
+            func sendError() {
                 completionHandlerForGetPhotosForLatLong(success: false, photos: nil)
+            }
+            
+            guard error == nil else {
+                sendError()
                 return
             }
             
+            guard let allPhotos = result[FlickrConstants.ResponseKeys.Photos] as? [String: AnyObject], let photos = allPhotos[FlickrConstants.ResponseKeys.Photo] as? [[String: AnyObject]] else {
+//                displayError("Unexpected response JSON format")
+                sendError()
+                return
+            }
+            
+            if photos.isEmpty {
+//                displayError("No images found for page")
+                sendError()
+                return
+            }
+            
+            var pinPhotos = [Photo]()
+            for photo in photos {
+                pinPhotos.append(Photo(imageUrl: photo[FlickrConstants.ResponseKeys.MediumURL] as! String))
+            }
+            
+            
             //Send the desired values to completion handler
             print(result)
+            
             //If there isn't an error, always return a photos array, even if empty
-            completionHandlerForGetPhotosForLatLong(success: true, photos: [Photo]())
+            completionHandlerForGetPhotosForLatLong(success: true, photos: pinPhotos)
         }
         
     }
