@@ -8,4 +8,9 @@
 
 class Photo {
     
+    let imageUrl: String
+    
+    init(imageUrl: String) {
+        self.imageUrl = imageUrl
+    }
 }
