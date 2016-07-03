@@ -33,26 +33,28 @@ class PhotoAlbumViewController: UIViewController {
                     return
                 }
                 
-                self.pin.photos = photos!
-                
+                performUIUpdatesOnMain({ 
+                    self.pin.photos = photos!
+                    self.collectionView.reloadData()
+                })
             })
         }
     }
     
     //TODO do I need this?
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        // Lay out the collection view so that cells take up 1/3 of the width,
-        // with no space in between.
-        let layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
-        
-        let width = floor(self.collectionView.frame.size.width/3)
-        layout.itemSize = CGSize(width: width, height: width)
-        collectionView.collectionViewLayout = layout
-    }
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        // Lay out the collection view so that cells take up 1/3 of the width,
+//        // with no space in between.
+//        let layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+//        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//        layout.minimumLineSpacing = 0
+//        layout.minimumInteritemSpacing = 0
+//        
+//        let width = floor(self.collectionView.frame.size.width/3)
+//        layout.itemSize = CGSize(width: width, height: width)
+//        collectionView.collectionViewLayout = layout
+//    }
 }
 
 extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -67,13 +69,12 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     //MARK: - UICollectionView
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        //TODO return proper number
         return 1;
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //TODO return proper number
-        return 12;
+//        return 12
+        return pin.photos.count
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
