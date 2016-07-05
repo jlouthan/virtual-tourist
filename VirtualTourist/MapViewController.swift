@@ -8,17 +8,32 @@
 
 import UIKit
 import MapKit
+import CoreData
 
-class MapViewController: UIViewController, MKMapViewDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsControllerDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
-
-    var pins = [Pin]()
+    
+    var sharedContext = CoreDataStackManager.sharedInstance().managedObjectContext!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
+        
+        // Start the fetched results controller
+        var error: NSError?
+        do {
+            try fetchedResultsController.performFetch()
+        } catch let error1 as NSError {
+            error = error1
+        }
+        
+        if let error = error {
+            print("Error performing initial fetch: \(error)")
+        }
+        
         restoreMapRegion(false)
+        populatePins()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -29,7 +44,41 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         navigationController!.navigationBarHidden = false
     }
     
-    //MARK: Drop Pin
+    func populatePins() {
+        if let pins = fetchedResultsController.fetchedObjects as? [Pin] {
+            for pin in pins {
+                let annotation = MapAnnotation(pin: pin)
+                mapView.addAnnotation(annotation)
+            }
+        }
+    }
+    
+    // MARK: - NSFetchedResultsController
+    
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        fetchRequest.sortDescriptors = []
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        
+        return fetchedResultsController
+    }()
+    
+    //If we add a pin to the context, add it to the map
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+        
+        //For this app, we only care about adding pins
+        if type == .Insert {
+            let pin = anObject as! Pin
+            let annotation = MapAnnotation(pin: pin)
+            mapView.addAnnotation(annotation)
+        }
+    }
+    
+    
+    //MARK: Create and Drop Pin
     
     @IBAction func handleLongPress(sender: UILongPressGestureRecognizer) {
         if sender.state == .Began {
@@ -38,13 +87,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let touchPoint = sender.locationInView(mapView)
             let coordinate = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
             
-            //Save the pin instance
-            let pin = Pin(dictionary: ["latitude": coordinate.latitude, "longitude": coordinate.longitude])
-            pins.append(pin)
-            
-            //Drop a pin
-            let annotation = MapAnnotation(pin: pin)
-            mapView.addAnnotation(annotation)
+            //Create a pin and add it to the context
+            let pin = Pin(dictionary: ["latitude": coordinate.latitude, "longitude": coordinate.longitude], context: sharedContext)
+            //Save the context
+            CoreDataStackManager.sharedInstance().saveContext()
         }
     }
     

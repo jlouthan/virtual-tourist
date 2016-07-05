@@ -7,13 +7,21 @@
 //
 
 import UIKit
+import CoreData
 
-class Photo {
+class Photo : NSManagedObject {
     
-    let imageUrl: String
+    @NSManaged var imageUrl: String
+    @NSManaged var imageData: NSData
+    @NSManaged var pin: Pin?
     var image: UIImage?
     
-    init(imageUrl: String) {
+    init(imageUrl: String, context: NSManagedObjectContext) {
+        
+        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)!
+        
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+        
         self.imageUrl = imageUrl
     }
 }

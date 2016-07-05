@@ -63,9 +63,9 @@ extension FlickrClient {
             }
             
             var pinPhotos = [Photo]()
-            for photo in photos {
-                pinPhotos.append(Photo(imageUrl: photo[FlickrConstants.ResponseKeys.MediumURL] as! String))
-            }
+//            for photo in photos {
+//                pinPhotos.append(Photo(imageUrl: photo[FlickrConstants.ResponseKeys.MediumURL] as! String))
+//            }
             
             
             //Send the desired values to completion handler
