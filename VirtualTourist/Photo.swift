@@ -6,9 +6,12 @@
 //  Copyright © 2016 JennyLouthan. All rights reserved.
 //
 
+import UIKit
+
 class Photo {
     
     let imageUrl: String
+    var image: UIImage?
     
     init(imageUrl: String) {
         self.imageUrl = imageUrl

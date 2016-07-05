@@ -59,11 +59,36 @@ class PhotoAlbumViewController: UIViewController {
 
 extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
+    //MARK - Image Downloading
+    
+    func downloadImage(imageUrl: String, completionHandler handler: (image: UIImage) -> Void) {
+        //Do the downloading on the background thread, then run the completion handler
+        // on the main thread
+        runInBackgroundQueue { 
+            if let url = NSURL(string: imageUrl), imgData = NSData(contentsOfURL: url), image = UIImage(data: imgData) {
+                performUIUpdatesOnMain({ 
+                    handler(image: image)
+                })
+            } else {
+                print("Error downloading the image")
+            }
+        }
+    }
+    
     //MARK - Configure Cell
     
     func configureCell(cell: PhotoAlbumCell, atIndexPath indexPath: NSIndexPath) {
-        //Set a placeholder for now
-        cell.imageView!.image = UIImage(named: "placeholder")
+        //Set a placeholder
+        cell.imageView.image = UIImage(named: "placeholder")
+        //Set the image if it has been downloaded already. If not, grab it on a background thread
+        if let image = pin.photos[indexPath.row].image {
+            cell.imageView.image = image
+        } else {
+            downloadImage(pin.photos[indexPath.row].imageUrl, completionHandler: { (image) in
+                cell.imageView.image = image
+                self.pin.photos[indexPath.row].image = image
+            })
+        }
     }
     
     //MARK: - UICollectionView

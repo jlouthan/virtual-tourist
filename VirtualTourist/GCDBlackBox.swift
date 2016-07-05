@@ -13,3 +13,9 @@ func performUIUpdatesOnMain(updates: () -> Void) {
         updates()
     }
 }
+
+func runInBackgroundQueue(task: () -> Void) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { 
+        task()
+    }
+}
