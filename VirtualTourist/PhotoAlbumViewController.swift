@@ -8,19 +8,44 @@
 
 import UIKit
 import MapKit
+import CoreData
 
-class PhotoAlbumViewController: UIViewController {
+class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDelegate {
     
     var pin: Pin!
+    
+    // The selected indexes array keeps all of the indexPaths for cells that are "selected". The array is
+    // used inside cellForItemAtIndexPath to lower the alpha of selected cells.  You can see how the array
+    // works by searchign through the code for 'selectedIndexes'
+    var selectedIndexes = [NSIndexPath]()
+    
+    // Keep the changes. We will keep track of insertions, deletions, and updates.
+    var insertedIndexPaths: [NSIndexPath]!
+    var deletedIndexPaths: [NSIndexPath]!
+    var updatedIndexPaths: [NSIndexPath]!
     
     override func viewDidLoad() {
         print("my pin is")
         print(pin.latitude)
         print(pin.longitude)
         super.viewDidLoad()
+        
+        // Start the fetched results controller
+        var error: NSError?
+        do {
+            try fetchedResultsController.performFetch()
+        } catch let error1 as NSError {
+            error = error1
+        }
+        
+        if let error = error {
+            print("Error performing initial fetch: \(error)")
+        }
+        
     }
     
     @IBOutlet weak var collectionView: UICollectionView!
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -38,8 +63,10 @@ class PhotoAlbumViewController: UIViewController {
                     photo.pin = self.pin
                 }
                 
+                //Save the Photos we created and their relationship to the pin
+                CoreDataStackManager.sharedInstance().saveContext()
+                
                 performUIUpdatesOnMain({ 
-//                    self.pin.photos = photos!
                     self.collectionView.reloadData()
                 })
             })
@@ -49,6 +76,31 @@ class PhotoAlbumViewController: UIViewController {
     // MARK: - Core Data Convenience
     var sharedContext = CoreDataStackManager.sharedInstance().managedObjectContext!
     
+    //MARK: - NSFetchedResultsController
+    
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        fetchRequest.sortDescriptors = []
+        fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin)
+        
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.sharedContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        
+        return fetchedResultsController
+        
+    }()
+    
+    //MARK: - Fetched Results Controller Delegate
+    
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        //About to handle new changes
+        insertedIndexPaths = [NSIndexPath]()
+        deletedIndexPaths = [NSIndexPath]()
+        updatedIndexPaths = [NSIndexPath]()
+        
+        print("in controllerWillChangeContent")
+    }
     
     //TODO do I need this?
 //    override func viewDidLayoutSubviews() {
@@ -87,15 +139,22 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     //MARK - Configure Cell
     
     func configureCell(cell: PhotoAlbumCell, atIndexPath indexPath: NSIndexPath) {
+        
         //Set a placeholder
         cell.imageView.image = UIImage(named: "placeholder")
+        
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         //Set the image if it has been downloaded already. If not, grab it on a background thread
-        if let image = pin.photos[indexPath.row].image {
+        if let image = photo.image {
+            print("image in here")
             cell.imageView.image = image
         } else {
-            downloadImage(pin.photos[indexPath.row].imageUrl, completionHandler: { (image) in
+            downloadImage(photo.imageUrl, completionHandler: { (image) in
                 cell.imageView.image = image
-                self.pin.photos[indexPath.row].image = image
+                print("Downloaded the image")
+                //TODO save this image as Binary Type
+                photo.image = image
+                CoreDataStackManager.sharedInstance().saveContext()
             })
         }
     }
@@ -103,12 +162,12 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     //MARK: - UICollectionView
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1;
+        return fetchedResultsController.sections?.count ?? 0
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return 12
-        return pin.photos.count
+        let sectionInfo = fetchedResultsController.sections![section]
+        return sectionInfo.numberOfObjects
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
