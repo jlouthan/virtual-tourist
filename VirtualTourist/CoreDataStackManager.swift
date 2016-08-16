@@ -80,8 +80,10 @@ class CoreDataStackManager {
         
         var error: NSError? = nil
 
+        let options = [NSInferMappingModelAutomaticallyOption: true, NSMigratePersistentStoresAutomaticallyOption: true]
+        
         do {
-            try coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
+            try coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: options)
         } catch var error1 as NSError {
             error = error1
             coordinator = nil
@@ -99,6 +101,9 @@ class CoreDataStackManager {
         } catch {
             fatalError()
         }
+        
+        //TODO move this into its own method
+//        try! coordinator!.destroyPersistentStoreAtURL(url, withType: NSSQLiteStoreType, options: nil)
         
         return coordinator
         }()

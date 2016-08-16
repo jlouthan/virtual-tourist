@@ -122,13 +122,13 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     
     //MARK - Image Downloading
     
-    func downloadImage(imageUrl: String, completionHandler handler: (image: UIImage) -> Void) {
+    func downloadImage(imageUrl: String, completionHandler handler: (imgData: NSData) -> Void) {
         //Do the downloading on the background thread, then run the completion handler
         // on the main thread
         runInBackgroundQueue { 
-            if let url = NSURL(string: imageUrl), imgData = NSData(contentsOfURL: url), image = UIImage(data: imgData) {
+            if let url = NSURL(string: imageUrl), imgData = NSData(contentsOfURL: url) {
                 performUIUpdatesOnMain({ 
-                    handler(image: image)
+                    handler(imgData: imgData)
                 })
             } else {
                 print("Error downloading the image")
@@ -145,15 +145,14 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         //Set the image if it has been downloaded already. If not, grab it on a background thread
-        if let image = photo.image {
-            print("image in here")
-            cell.imageView.image = image
+        if let imageData = photo.imageData {
+            print("image already exists")
+            cell.imageView.image = UIImage(data: imageData)
         } else {
-            downloadImage(photo.imageUrl, completionHandler: { (image) in
-                cell.imageView.image = image
-                print("Downloaded the image")
-                //TODO save this image as Binary Type
-                photo.image = image
+            downloadImage(photo.imageUrl, completionHandler: { (imgData) in
+                //TODO remove this when pulling photos from fetchedresultscontroller
+                cell.imageView.image = UIImage(data: imgData)
+                photo.imageData = imgData
                 CoreDataStackManager.sharedInstance().saveContext()
             })
         }
