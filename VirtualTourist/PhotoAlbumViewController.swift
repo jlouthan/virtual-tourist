@@ -26,20 +26,29 @@ class PhotoAlbumViewController: UIViewController {
         
         if pin.photos.isEmpty {
             
-            FlickrClient.sharedInstance().getPhotosForLatLong(pin.latitude, longitude: pin.longitude, completionHandlerForGetPhotosForLatLong: { (success, photos) in
+            FlickrClient.sharedInstance().getPhotosForLatLong(pin.latitude, longitude: pin.longitude, completionHandlerForGetPhotosForLatLong: { success, photoDictionaries in
                 
                 guard success == true else {
                     print("Error getting photos")
                     return
                 }
+            
+                for photo in photoDictionaries! {
+                    let photo = Photo(imageUrl: photo[FlickrConstants.ResponseKeys.MediumURL] as! String, context: self.sharedContext)
+                    photo.pin = self.pin
+                }
                 
                 performUIUpdatesOnMain({ 
-                    self.pin.photos = photos!
+//                    self.pin.photos = photos!
                     self.collectionView.reloadData()
                 })
             })
         }
     }
+    
+    // MARK: - Core Data Convenience
+    var sharedContext = CoreDataStackManager.sharedInstance().managedObjectContext!
+    
     
     //TODO do I need this?
 //    override func viewDidLayoutSubviews() {

@@ -16,6 +16,11 @@ class Photo : NSManagedObject {
     @NSManaged var pin: Pin?
     var image: UIImage?
     
+    // Include this standard Core Data init method
+    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    }
+    
     init(imageUrl: String, context: NSManagedObjectContext) {
         
         let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)!

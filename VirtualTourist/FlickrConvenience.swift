@@ -21,7 +21,7 @@ extension FlickrClient {
     
     //MARK: GET Convenience Methods
     
-    func getPhotosForLatLong(latitude: Double, longitude: Double, completionHandlerForGetPhotosForLatLong: (success: Bool, photos: [Photo]?) -> Void ) {
+    func getPhotosForLatLong(latitude: Double, longitude: Double, completionHandlerForGetPhotosForLatLong: (success: Bool, photoDictionaries: [[String: AnyObject]]?) -> Void ) {
 
         let parameters = [
             FlickrConstants.ParameterKeys.BoundingBox: getBBoxString(latitude, long: longitude),
@@ -42,7 +42,7 @@ extension FlickrClient {
             
             //TODO actually send the message if there's an error?
             func sendError() {
-                completionHandlerForGetPhotosForLatLong(success: false, photos: nil)
+                completionHandlerForGetPhotosForLatLong(success: false, photoDictionaries: nil)
             }
             
             guard error == nil else {
@@ -62,7 +62,7 @@ extension FlickrClient {
                 return
             }
             
-            var pinPhotos = [Photo]()
+//            var pinPhotos = [Photo]()
 //            for photo in photos {
 //                pinPhotos.append(Photo(imageUrl: photo[FlickrConstants.ResponseKeys.MediumURL] as! String))
 //            }
@@ -72,7 +72,8 @@ extension FlickrClient {
             print(result)
             
             //If there isn't an error, always return a photos array, even if empty
-            completionHandlerForGetPhotosForLatLong(success: true, photos: pinPhotos)
+//            completionHandlerForGetPhotosForLatLong(success: true, photos: pinPhotos)
+            completionHandlerForGetPhotosForLatLong(success: true, photoDictionaries: photos)
         }
         
     }
