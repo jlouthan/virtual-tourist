@@ -229,7 +229,10 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        print("Selected item at an index path")
+        //Remove the photo from core data and update the collection view
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        sharedContext.deleteObject(photo)
+        CoreDataStackManager.sharedInstance().saveContext()
     }
 }
 
