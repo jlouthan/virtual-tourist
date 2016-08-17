@@ -40,39 +40,28 @@ extension FlickrClient {
         
         requestBuilder.taskForGETMethod(url, headers: headers) { (result, error) in
             
-            //TODO actually send the message if there's an error?
-            func sendError() {
+            func sendError(error: String) {
+                print(error)
                 completionHandlerForGetPhotosForLatLong(success: false, photoDictionaries: nil)
             }
             
             guard error == nil else {
-                sendError()
+                sendError(error!)
                 return
             }
             
             guard let allPhotos = result[FlickrConstants.ResponseKeys.Photos] as? [String: AnyObject], let photos = allPhotos[FlickrConstants.ResponseKeys.Photo] as? [[String: AnyObject]] else {
-//                displayError("Unexpected response JSON format")
-                sendError()
+                sendError("Unexpected response JSON format")
                 return
             }
             
             if photos.isEmpty {
-//                displayError("No images found for page")
-                sendError()
+                sendError("No images found for page")
                 return
             }
             
-//            var pinPhotos = [Photo]()
-//            for photo in photos {
-//                pinPhotos.append(Photo(imageUrl: photo[FlickrConstants.ResponseKeys.MediumURL] as! String))
-//            }
             
-            
-            //Send the desired values to completion handler
-            print(result)
-            
-            //If there isn't an error, always return a photos array, even if empty
-//            completionHandlerForGetPhotosForLatLong(success: true, photos: pinPhotos)
+            //Send the desired values to completion handler as a dictionary
             completionHandlerForGetPhotosForLatLong(success: true, photoDictionaries: photos)
         }
         

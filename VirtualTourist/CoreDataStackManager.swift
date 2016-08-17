@@ -102,9 +102,6 @@ class CoreDataStackManager {
             fatalError()
         }
         
-        //TODO move this into its own method
-//        try! coordinator!.destroyPersistentStoreAtURL(url, withType: NSSQLiteStoreType, options: nil)
-        
         return coordinator
         }()
     
@@ -117,7 +114,8 @@ class CoreDataStackManager {
         if coordinator == nil {
             return nil
         }
-        var managedObjectContext = NSManagedObjectContext()
+        
+        var managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = coordinator
         return managedObjectContext
         }()
@@ -126,7 +124,7 @@ class CoreDataStackManager {
     
     func saveContext () {
 
-        if let context = self.managedObjectContext {
+        if let context = managedObjectContext {
         
             var error: NSError? = nil
             
@@ -139,6 +137,16 @@ class CoreDataStackManager {
                     abort()
                 }
             }
+        }
+    }
+    
+    // MARK: - clear Core Data
+    
+    func clearData () {
+        
+        if let coordinator = persistentStoreCoordinator {
+            let url = applicationDocumentsDirectory.URLByAppendingPathComponent(SQLITE_FILE_NAME)
+            try! coordinator.destroyPersistentStoreAtURL(url, withType: NSSQLiteStoreType, options: nil)
         }
     }
 }

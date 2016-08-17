@@ -106,25 +106,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
         mapView.deselectAnnotation(view.annotation, animated: false)
     }
     
-    //do I need this?
-//    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-//        if let annotation = annotation as? MapAnnotation {
-//            let identifier = "pin"
-//            var view: MKPinAnnotationView
-//            if let dequeuedView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
-//                as? MKPinAnnotationView { // 2
-//                dequeuedView.annotation = annotation
-//                view = dequeuedView
-//            } else {
-//                // 3
-//                view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-//            }
-//            return view
-//        }
-//        return nil
-//    }
-    
-    //TODO maybe save zoom location when the app is about to quit, not every time the location moves?
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         saveMapRegion()
     }

@@ -14,12 +14,8 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     
     var pin: Pin!
     
-    // The selected indexes array keeps all of the indexPaths for cells that are "selected". The array is
-    // used inside cellForItemAtIndexPath to lower the alpha of selected cells.  You can see how the array
-    // works by searchign through the code for 'selectedIndexes'
-    var selectedIndexes = [NSIndexPath]()
-    
-    // Keep the changes. We will keep track of insertions, deletions, and updates.
+    // Keep trask of changes. We will track of insertions, deletions, and updates to execute in
+    // - controllerDidChangeContent method
     var insertedIndexPaths: [NSIndexPath]!
     var deletedIndexPaths: [NSIndexPath]!
     var updatedIndexPaths: [NSIndexPath]!
@@ -27,9 +23,6 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
-        print("my pin is")
-        print(pin.latitude)
-        print(pin.longitude)
         super.viewDidLoad()
         
         // Start the fetched results controller
@@ -49,11 +42,15 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        //If the pin doesn't have photos yet, fetch from Flickr API
         if pin.photos.isEmpty {
             getPhotos()
         }
     }
     
+    //Gets photos for the current pin's location from Flickr,
+    // creates Photo managed objects, creates the relationship,
+    // and saves the context
     func getPhotos() {
         FlickrClient.sharedInstance().getPhotosForLatLong(pin.latitude, longitude: pin.longitude, completionHandlerForGetPhotosForLatLong: { success, photoDictionaries in
             
@@ -110,12 +107,12 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     //MARK: - Fetched Results Controller Delegate
     
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        
         //About to handle new changes
         insertedIndexPaths = [NSIndexPath]()
         deletedIndexPaths = [NSIndexPath]()
         updatedIndexPaths = [NSIndexPath]()
         
-        print("in controllerWillChangeContent")
     }
     
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
@@ -123,37 +120,27 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         switch type {
         
         case .Insert:
-            print("Insert an item")
-            // Here we are noting that a new Color instance has been added to Core Data. We remember its index path
-            // so that we can add a cell in "controllerDidChangeContent". Note that the "newIndexPath" parameter has
-            // the index path that we want in this case
+            // A new photo has been added to Core Data, track its index to
+            // add a cell in -controllerDidChangeContent
             insertedIndexPaths.append(newIndexPath!)
             break
         case .Delete:
-            print("Delete an item")
-            // Here we are noting that a Color instance has been deleted from Core Data. We keep remember its index path
-            // so that we can remove the corresponding cell in "controllerDidChangeContent". The "indexPath" parameter has
-            // value that we want in this case.
+            //A photo has been deleted from Core Data, track its old index to
+            // remove the cell in - controllerDidChangeContent
             deletedIndexPaths.append(indexPath!)
             break
         case .Update:
-            print("Update an item.")
-            //TODO update these and all other comments
-            // We don't expect Color instances to change after they are created. But Core Data would
-            // notify us of changes if any occured. This can be useful if you want to respond to changes
-            // that come about after data is downloaded. For example, when an images is downloaded from
-            // Flickr in the Virtual Tourist app
+            // A Photo instance has changed. Track its index to update
+            // the cell in -controllerDidChangeContent
             updatedIndexPaths.append(indexPath!)
             break
         case .Move:
-            print("Move an item. We don't expect to see this in this app.")
+            // We don't expect to be moving Photos
             break
         }
     }
     
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        
-        print("in controllerDidChangeContent. changes.count: \(insertedIndexPaths.count + deletedIndexPaths.count)")
         
         collectionView.performBatchUpdates({() -> Void in
         
