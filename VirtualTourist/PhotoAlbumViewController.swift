@@ -24,6 +24,8 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     var deletedIndexPaths: [NSIndexPath]!
     var updatedIndexPaths: [NSIndexPath]!
     
+    @IBOutlet weak var collectionView: UICollectionView!
+    
     override func viewDidLoad() {
         print("my pin is")
         print(pin.latitude)
@@ -44,8 +46,6 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         
     }
     
-    @IBOutlet weak var collectionView: UICollectionView!
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -63,10 +63,10 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
                     photo.pin = self.pin
                 }
                 
-                //Save the Photos we created and their relationship to the pin
-                CoreDataStackManager.sharedInstance().saveContext()
-                
-                performUIUpdatesOnMain({ 
+                performUIUpdatesOnMain({
+                    
+                    //Save the Photos we created and their relationship to the pin
+                    CoreDataStackManager.sharedInstance().saveContext()
                     self.collectionView.reloadData()
                 })
             })
@@ -102,7 +102,61 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         print("in controllerWillChangeContent")
     }
     
-    //TODO do I need this?
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+        
+        switch type {
+        
+        case .Insert:
+            print("Insert an item")
+            // Here we are noting that a new Color instance has been added to Core Data. We remember its index path
+            // so that we can add a cell in "controllerDidChangeContent". Note that the "newIndexPath" parameter has
+            // the index path that we want in this case
+            insertedIndexPaths.append(newIndexPath!)
+            break
+        case .Delete:
+            print("Delete an item")
+            // Here we are noting that a Color instance has been deleted from Core Data. We keep remember its index path
+            // so that we can remove the corresponding cell in "controllerDidChangeContent". The "indexPath" parameter has
+            // value that we want in this case.
+            deletedIndexPaths.append(indexPath!)
+            break
+        case .Update:
+            print("Update an item.")
+            // We don't expect Color instances to change after they are created. But Core Data would
+            // notify us of changes if any occured. This can be useful if you want to respond to changes
+            // that come about after data is downloaded. For example, when an images is downloaded from
+            // Flickr in the Virtual Tourist app
+            updatedIndexPaths.append(indexPath!)
+            break
+        case .Move:
+            print("Move an item. We don't expect to see this in this app.")
+            break
+        }
+    }
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        
+        print("in controllerDidChangeContent. changes.count: \(insertedIndexPaths.count + deletedIndexPaths.count)")
+        
+        collectionView.performBatchUpdates({() -> Void in
+        
+            for indexPath in self.insertedIndexPaths {
+                self.collectionView.insertItemsAtIndexPaths([indexPath])
+            }
+            
+            for indexPath in self.deletedIndexPaths {
+                self.collectionView.deleteItemsAtIndexPaths([indexPath])
+            }
+            
+            for indexPath in self.updatedIndexPaths {
+                self.collectionView.reloadItemsAtIndexPaths([indexPath])
+            }
+            
+            }, completion: nil)
+        
+    }
+    
+//    //TODO do I need this?
 //    override func viewDidLayoutSubviews() {
 //        super.viewDidLayoutSubviews()
 //        // Lay out the collection view so that cells take up 1/3 of the width,
@@ -144,14 +198,12 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         cell.imageView.image = UIImage(named: "placeholder")
         
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        
         //Set the image if it has been downloaded already. If not, grab it on a background thread
         if let imageData = photo.imageData {
-            print("image already exists")
             cell.imageView.image = UIImage(data: imageData)
         } else {
             downloadImage(photo.imageUrl, completionHandler: { (imgData) in
-                //TODO remove this when pulling photos from fetchedresultscontroller
-                cell.imageView.image = UIImage(data: imgData)
                 photo.imageData = imgData
                 CoreDataStackManager.sharedInstance().saveContext()
             })
