@@ -47,7 +47,7 @@ struct FlickrConstants {
         static let GalleryID = "5704-72157622566655097"
         static let MediumURL = "url_m"
         static let UseSafeSearch = "1"
-        static let NumPerPage = "20"
+        static let NumPerPage = "30"
     }
     
     // MARK: Flickr Response Keys
