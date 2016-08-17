@@ -160,20 +160,20 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         
     }
     
-//    //TODO do I need this?
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        // Lay out the collection view so that cells take up 1/3 of the width,
-//        // with no space in between.
-//        let layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-//        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//        layout.minimumLineSpacing = 0
-//        layout.minimumInteritemSpacing = 0
-//        
-//        let width = floor(self.collectionView.frame.size.width/3)
-//        layout.itemSize = CGSize(width: width, height: width)
-//        collectionView.collectionViewLayout = layout
-//    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // Lay out the collection view so that cells take up 1/3 of the width,
+        // with no space in between.
+        let layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        
+        let width = floor(self.collectionView.frame.size.width/3)
+        layout.itemSize = CGSize(width: width, height: width)
+        collectionView.collectionViewLayout = layout
+    }
+    
 }
 
 extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionViewDelegate {

@@ -93,12 +93,18 @@
                                             <rect key="frame" x="0.0" y="0.0" width="92" height="138"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3in-Wf-8gK">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3in-Wf-8gK">
                                                     <rect key="frame" x="0.0" y="0.0" width="92" height="138"/>
                                                 </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <constraints>
+                                            <constraint firstItem="3in-Wf-8gK" firstAttribute="top" secondItem="Qaf-A9-OC2" secondAttribute="topMargin" constant="-8" id="bUZ-bp-CKu"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="3in-Wf-8gK" secondAttribute="bottom" constant="-8" id="dTk-CU-22r"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="3in-Wf-8gK" secondAttribute="trailing" constant="-8" id="lPv-hD-aGS"/>
+                                            <constraint firstItem="3in-Wf-8gK" firstAttribute="leading" secondItem="Qaf-A9-OC2" secondAttribute="leadingMargin" constant="-8" id="rsr-N8-P57"/>
+                                        </constraints>
                                         <connections>
                                             <outlet property="imageView" destination="3in-Wf-8gK" id="sHm-zO-7iB"/>
                                         </connections>
