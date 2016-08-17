@@ -98,9 +98,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, NSFetchedResultsCo
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         let annotation = view.annotation as? MapAnnotation
-        let controller = self.storyboard?.instantiateViewControllerWithIdentifier("PhotoAlbumVC") as! PhotoAlbumViewController
+        let controller = storyboard?.instantiateViewControllerWithIdentifier("PhotoAlbumVC") as! PhotoAlbumViewController
         controller.pin = annotation?.pin
-        self.navigationController?.pushViewController(controller, animated: true)
+        navigationController?.pushViewController(controller, animated: true)
         
         
         mapView.deselectAnnotation(view.annotation, animated: false)

@@ -169,7 +169,7 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         
-        let width = floor(self.collectionView.frame.size.width/3)
+        let width = floor(collectionView.frame.size.width/3)
         layout.itemSize = CGSize(width: width, height: width)
         collectionView.collectionViewLayout = layout
     }
