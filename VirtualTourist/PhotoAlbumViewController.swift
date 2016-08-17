@@ -73,6 +73,12 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         }
     }
     
+    
+    //MARK: - Refresh photos for pin
+    @IBAction func refreshPhotos(sender: UIBarButtonItem) {
+        print("refresh photos")
+    }
+    
     // MARK: - Core Data Convenience
     var sharedContext = CoreDataStackManager.sharedInstance().managedObjectContext!
     
