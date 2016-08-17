@@ -50,33 +50,43 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         super.viewWillAppear(animated)
         
         if pin.photos.isEmpty {
-            
-            FlickrClient.sharedInstance().getPhotosForLatLong(pin.latitude, longitude: pin.longitude, completionHandlerForGetPhotosForLatLong: { success, photoDictionaries in
-                
-                guard success == true else {
-                    print("Error getting photos")
-                    return
-                }
-            
-                for photo in photoDictionaries! {
-                    let photo = Photo(imageUrl: photo[FlickrConstants.ResponseKeys.MediumURL] as! String, context: self.sharedContext)
-                    photo.pin = self.pin
-                }
-                
-                performUIUpdatesOnMain({
-                    
-                    //Save the Photos we created and their relationship to the pin
-                    CoreDataStackManager.sharedInstance().saveContext()
-                    self.collectionView.reloadData()
-                })
-            })
+            getPhotos()
         }
+    }
+    
+    func getPhotos() {
+        FlickrClient.sharedInstance().getPhotosForLatLong(pin.latitude, longitude: pin.longitude, completionHandlerForGetPhotosForLatLong: { success, photoDictionaries in
+            
+            guard success == true else {
+                print("Error getting photos")
+                return
+            }
+            
+            for photo in photoDictionaries! {
+                let photo = Photo(imageUrl: photo[FlickrConstants.ResponseKeys.MediumURL] as! String, context: self.sharedContext)
+                photo.pin = self.pin
+            }
+            
+            performUIUpdatesOnMain({
+                
+                //Save the Photos we created and their relationship to the pin
+                CoreDataStackManager.sharedInstance().saveContext()
+                self.collectionView.reloadData()
+            })
+        })
     }
     
     
     //MARK: - Refresh photos for pin
     @IBAction func refreshPhotos(sender: UIBarButtonItem) {
-        print("refresh photos")
+        
+        //Delete all the photos
+        for photo in fetchedResultsController.fetchedObjects as! [Photo] {
+            sharedContext.deleteObject(photo)
+        }
+        
+        //Then fetch all new ones
+        getPhotos()
     }
     
     // MARK: - Core Data Convenience
@@ -128,6 +138,7 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
             break
         case .Update:
             print("Update an item.")
+            //TODO update these and all other comments
             // We don't expect Color instances to change after they are created. But Core Data would
             // notify us of changes if any occured. This can be useful if you want to respond to changes
             // that come about after data is downloaded. For example, when an images is downloaded from
